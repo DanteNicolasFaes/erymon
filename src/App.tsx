@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, type FormEvent } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { Link } from 'react-scroll'
 import LegalPages from './LegalPages'
@@ -11,6 +11,8 @@ function App() {
 
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [hoveredService, setHoveredService] = useState<number | null>(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitMessage, setSubmitMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
   const { scrollY } = useScroll()
   
   const parallaxY = useTransform(scrollY, [0, 1000], [0, 300])
@@ -187,6 +189,58 @@ function App() {
     }
   ]
 
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+
+    const form = event.currentTarget
+    if (!form.reportValidity()) return
+
+    setIsSubmitting(true)
+    setSubmitMessage(null)
+
+    const formData = new FormData(form)
+    const payload = {
+      name: String(formData.get('name') ?? ''),
+      email: String(formData.get('email') ?? ''),
+      servicio: String(formData.get('servicio') ?? ''),
+      message: String(formData.get('message') ?? '')
+    }
+
+    try {
+      console.log('Enviando a Formspark', payload)
+      const response = await fetch('https://submit-form.com/qRZlVApRu', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
+        },
+        body: JSON.stringify(payload)
+      })
+
+      console.log('Formspark response status', response.status)
+
+      if (!response.ok) {
+        console.error('Formspark error status', response.status)
+        console.error('Formspark error statusText', response.statusText)
+        console.error('Formspark error body', await response.text())
+        throw new Error('Formspark request failed')
+      }
+
+      form.reset()
+      setSubmitMessage({
+        type: 'success',
+        text: 'Mensaje enviado correctamente. Te responderemos pronto.'
+      })
+    } catch {
+      setSubmitMessage({
+        type: 'error',
+        text: 'Ocurrió un error al enviar el mensaje. Intentá nuevamente.'
+      })
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
   return (
     <div className="min-h-screen bg-[#0A0A1E] text-white overflow-x-hidden">
       {/* 3D Canvas Background */}
@@ -286,6 +340,16 @@ function App() {
             >
               Ver Servicios
             </Link>
+            <motion.a
+              href="https://wa.me/541155053453"
+              target="_blank"
+              rel="noreferrer"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="border-2 border-green-500/40 px-8 py-4 rounded-xl font-bold text-lg hover:bg-green-500/10 transition-all"
+            >
+              Consultar por WhatsApp
+            </motion.a>
           </motion.div>
         </motion.div>
         
@@ -431,12 +495,14 @@ function App() {
               transition={{ duration: 0.8 }}
               className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8"
             >
-              <form className="space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-medium mb-2">Nombre</label>
                     <input 
-                      type="text" 
+                      type="text"
+                      name="name"
+                      required
                       className="w-full bg-white/5 border border-white/20 rounded-xl px-4 py-3 focus:outline-none focus:border-cyan-500 transition-colors"
                       placeholder="Tu nombre"
                     />
@@ -444,7 +510,9 @@ function App() {
                   <div>
                     <label className="block text-sm font-medium mb-2">Email</label>
                     <input 
-                      type="email" 
+                      type="email"
+                      name="email"
+                      required
                       className="w-full bg-white/5 border border-white/20 rounded-xl px-4 py-3 focus:outline-none focus:border-cyan-500 transition-colors"
                       placeholder="tu@email.com"
                     />
@@ -452,9 +520,15 @@ function App() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-2">Servicio de interés</label>
-                  <select className="w-full bg-white/5 border border-white/20 rounded-xl px-4 py-3 focus:outline-none focus:border-cyan-500 transition-colors">
+                  <select
+                    name="servicio"
+                    required
+                    className="w-full bg-white/5 border border-white/20 rounded-xl px-4 py-3 focus:outline-none focus:border-cyan-500 transition-colors"
+                  >
                     <option value="" className="bg-[#0A0A1E]">Selecciona un servicio</option>
-                    {services.map((s, i) => (
+                    {services
+                      .filter((s) => s.title !== 'Marketing Digital' && s.title !== 'ConsultorÃ­a Tech')
+                      .map((s, i) => (
                       <option key={i} value={s.title} className="bg-[#0A0A1E]">{s.title}</option>
                     ))}
                   </select>
@@ -462,6 +536,8 @@ function App() {
                 <div>
                   <label className="block text-sm font-medium mb-2">Mensaje</label>
                   <textarea 
+                    name="message"
+                    required
                     rows={5}
                     className="w-full bg-white/5 border border-white/20 rounded-xl px-4 py-3 focus:outline-none focus:border-cyan-500 transition-colors resize-none"
                     placeholder="Cuéntanos sobre tu proyecto..."
@@ -471,10 +547,20 @@ function App() {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   type="submit"
-                  className="w-full bg-gradient-to-r from-cyan-500 to-purple-600 py-4 rounded-xl font-bold text-lg hover:shadow-lg hover:shadow-purple-500/30 transition-all"
+                  disabled={isSubmitting}
+                  className="w-full bg-gradient-to-r from-cyan-500 to-purple-600 py-4 rounded-xl font-bold text-lg hover:shadow-lg hover:shadow-purple-500/30 transition-all disabled:cursor-not-allowed disabled:opacity-70"
                 >
-                  Enviar Mensaje
+                  {isSubmitting ? 'Enviando...' : 'Enviar Mensaje'}
                 </motion.button>
+                {submitMessage && (
+                  <p
+                    className={`text-sm text-center ${
+                      submitMessage.type === 'success' ? 'text-cyan-300' : 'text-red-300'
+                    }`}
+                  >
+                    {submitMessage.text}
+                  </p>
+                )}
                 <p className="text-xs text-gray-400 mt-4 text-center">
                   Al enviar este formulario, aceptás nuestra <a href="/privacidad" className="text-cyan-400 hover:text-cyan-300 underline underline-offset-2">Política de Privacidad</a>.
                 </p>
@@ -507,9 +593,11 @@ function App() {
                     </div>
                     <div>
                       <div className="text-gray-400 text-sm">Teléfono</div>
-                      <div className="font-semibold">+34 900 123 456</div>
+                      <div className="font-semibold">1155053453</div>
                     </div>
                   </div>
+
+
                   <div className="flex items-center gap-4">
                     <div className="w-12 h-12 bg-pink-500/20 rounded-xl flex items-center justify-center text-2xl">
                       📍
@@ -522,20 +610,26 @@ function App() {
                 </div>
               </div>
 
-              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8">
-                <h3 className="text-2xl font-bold mb-6">Síguenos</h3>
-                <div className="flex gap-4">
-                  {['𝕏', 'in', '📸', '▶️'].map((social, index) => (
-                    <motion.a
-                      key={index}
-                      href="#"
-                      whileHover={{ scale: 1.1, rotate: 5 }}
-                      whileTap={{ scale: 0.9 }}
-                      className="w-14 h-14 bg-white/10 rounded-xl flex items-center justify-center text-2xl hover:bg-gradient-to-br hover:from-cyan-500 hover:to-purple-600 transition-all"
-                    >
-                      {social}
-                    </motion.a>
-                  ))}
+              <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6">
+                <h3 className="text-2xl font-bold mb-4">Síguenos</h3>
+                <div className="flex">
+                  <motion.a
+                    href="https://instagram.com"
+                    target="_blank"
+                    rel="noreferrer"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="w-full flex items-center gap-4 bg-white/10 rounded-xl px-4 py-3 hover:bg-gradient-to-r hover:from-cyan-500/20 hover:to-purple-600/20 transition-all"
+                    aria-label="Instagram"
+                  >
+                    <span className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-2xl">
+                      📸
+                    </span>
+                    <span className="text-left">
+                      <span className="block font-semibold text-white">Instagram</span>
+                      <span className="block text-sm text-gray-400">Seguinos en redes</span>
+                    </span>
+                  </motion.a>
                 </div>
               </div>
             </motion.div>
@@ -559,6 +653,24 @@ function App() {
           </div>
         </div>
       </footer>
+
+      <motion.a
+        href="https://wa.me/541155053453"
+        target="_blank"
+        rel="noreferrer"
+        whileHover={{ scale: 1.08 }}
+        whileTap={{ scale: 0.95 }}
+        className="fixed bottom-6 right-6 z-50 inline-flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg shadow-[#25D366]/30 hover:bg-[#1fb857] transition-colors"
+        aria-label="Enviar WhatsApp"
+      >
+        <svg
+          aria-hidden="true"
+          viewBox="0 0 24 24"
+          className="h-7 w-7 fill-current"
+        >
+          <path d="M12 2a10 10 0 0 0-8.66 15l-1.05 3.83 3.92-1.03A10 10 0 1 0 12 2Zm0 18.18a8.12 8.12 0 0 1-4.13-1.13l-.28-.17-2.33.61.62-2.27-.18-.29A8.18 8.18 0 1 1 12 20.18Zm4.49-6.12c-.25-.13-1.47-.72-1.69-.8-.23-.08-.39-.12-.56.12-.16.25-.64.8-.78.97-.14.17-.28.19-.53.06a6.68 6.68 0 0 1-1.96-1.21 7.43 7.43 0 0 1-1.37-1.7c-.14-.25-.01-.38.11-.5.11-.11.25-.28.37-.42.12-.14.16-.24.25-.4.08-.17.04-.31-.02-.44-.06-.13-.56-1.35-.77-1.85-.2-.48-.4-.41-.56-.42h-.48c-.17 0-.44.06-.67.31-.23.25-.88.86-.88 2.1 0 1.23.9 2.43 1.02 2.6.12.16 1.76 2.69 4.26 3.77.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.15-1.18-.06-.11-.22-.17-.47-.29Z" />
+        </svg>
+      </motion.a>
     </div>
   )
 }
@@ -593,3 +705,11 @@ function Logo({ large = false, small = false }: { large?: boolean; small?: boole
 }
 
 export default App
+
+
+
+
+
+
+
+

@@ -132,40 +132,31 @@ function App() {
       title: "Desarrollo Web",
       description: "Sitios web y aplicaciones web de alto rendimiento con las últimas tecnologías",
       icon: "⚡",
-      gradient: "from-cyan-400 to-blue-600"
+      gradient: "from-cyan-400 to-blue-600",
+      cta: "Pedir web"
     },
     {
       title: "Diseño UI/UX",
       description: "Interfaces intuitivas y experiencias de usuario memorables que convierten",
       icon: "🎨",
-      gradient: "from-purple-400 to-pink-600"
-    },
-    {
-      title: "Marketing Digital",
-      description: "Estrategias integrales para aumentar tu presencia y conversión online",
-      icon: "📈",
-      gradient: "from-orange-400 to-red-600"
-    },
-    {
-      title: "Consultoría Tech",
-      description: "Asesoramiento experto para transformar digitalmente tu negocio",
-      icon: "💡",
-      gradient: "from-green-400 to-teal-600"
+      gradient: "from-purple-400 to-pink-600",
+      cta: "Mejorar diseño"
     },
     {
       title: "E-commerce",
       description: "Tiendas online robustas y escalables que maximizan tus ventas",
       icon: "🛒",
-      gradient: "from-yellow-400 to-orange-600"
+      gradient: "from-yellow-400 to-orange-600",
+      cta: "Crear tienda"
     },
     {
       title: "Apps Móviles",
       description: "Aplicaciones nativas y multiplataforma que conectan con tus usuarios",
       icon: "📱",
-      gradient: "from-indigo-400 to-purple-600"
+      gradient: "from-indigo-400 to-purple-600",
+      cta: "Consultar app"
     }
   ]
-
   const steps = [
     {
       step: "01",
@@ -331,7 +322,7 @@ function App() {
               smooth={true}
               className="bg-gradient-to-r from-cyan-500 to-purple-600 px-8 py-4 rounded-xl font-bold text-lg hover:shadow-lg hover:shadow-cyan-500/30 transition-all cursor-pointer"
             >
-              Comenzar Proyecto
+              Solicitar presupuesto
             </Link>
             <Link
               to="servicios"
@@ -348,7 +339,7 @@ function App() {
               whileTap={{ scale: 0.98 }}
               className="border-2 border-green-500/40 px-8 py-4 rounded-xl font-bold text-lg hover:bg-green-500/10 transition-all"
             >
-              Consultar por WhatsApp
+              Hablar por WhatsApp
             </motion.a>
           </motion.div>
         </motion.div>
@@ -383,7 +374,7 @@ function App() {
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 gap-8">
             {services.map((service, index) => (
               <motion.div
                 key={index}
@@ -396,7 +387,7 @@ function App() {
                 className="relative group"
               >
                 <div className={`absolute inset-0 bg-gradient-to-r ${service.gradient} rounded-2xl blur-xl opacity-20 group-hover:opacity-40 transition-opacity`} />
-                <div className="relative bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 h-full hover:border-white/30 transition-all group-hover:transform group-hover:-translate-y-2">
+                <div className="relative bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 h-full hover:border-white/30 transition-all group-hover:transform group-hover:-translate-y-2 flex flex-col">
                   <motion.div
                     animate={{ 
                       rotate: hoveredService === index ? 360 : 0,
@@ -409,11 +400,57 @@ function App() {
                   </motion.div>
                   <h3 className="text-2xl font-bold mb-4">{service.title}</h3>
                   <p className="text-gray-400">{service.description}</p>
+                  <Link
+                    to="contacto"
+                    smooth={true}
+                    duration={500}
+                    className="mt-6 inline-flex items-center justify-center rounded-xl border border-white/15 bg-white/10 px-5 py-3 text-sm font-semibold text-white hover:bg-white/15 transition-all cursor-pointer"
+                  >
+                    {service.cta}
+                  </Link>
                   <div className="mt-6 h-1 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-full w-0 group-hover:w-full transition-all duration-500" />
                 </div>
               </motion.div>
             ))}
           </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, delay: 0.1 }}
+            className="mt-16"
+          >
+            <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-8 md:p-10 backdrop-blur-sm">
+              <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 via-purple-500/10 to-pink-500/10 pointer-events-none" />
+              <div className="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+                <div className="max-w-2xl">
+                  <h3 className="text-3xl md:text-4xl font-bold mb-3">No sabes que necesita tu negocio?</h3>
+                  <p className="text-lg text-gray-300">Te ayudamos a definir la solucion mas simple y efectiva para empezar.</p>
+                </div>
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <Link
+                    to="contacto"
+                    smooth={true}
+                    duration={500}
+                    className="bg-gradient-to-r from-cyan-500 to-purple-600 px-6 py-3 rounded-xl font-semibold text-center hover:shadow-lg hover:shadow-cyan-500/20 transition-all cursor-pointer"
+                  >
+                    Solicitar diagnostico
+                  </Link>
+                  <motion.a
+                    href="https://wa.me/541155053453"
+                    target="_blank"
+                    rel="noreferrer"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="border border-green-500/40 bg-green-500/10 px-6 py-3 rounded-xl font-semibold text-center hover:bg-green-500/15 transition-all"
+                  >
+                    Hablar por WhatsApp
+                  </motion.a>
+                </div>
+              </div>
+            </div>
+          </motion.div>
         </div>
       </section>
 
@@ -465,6 +502,27 @@ function App() {
             </div>
           </div>
 
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, delay: 0.1 }}
+            className="mt-16"
+          >
+            <div className="mx-auto max-w-3xl rounded-3xl border border-white/10 bg-white/5 p-8 md:p-10 text-center backdrop-blur-sm">
+              <h3 className="text-3xl md:text-4xl font-bold mb-4">Tenes una idea o proyecto en mente?</h3>
+              <p className="text-lg text-gray-300 mb-8">Contanos que necesitas y te respondemos con una propuesta clara.</p>
+              <Link
+                to="contacto"
+                smooth={true}
+                duration={500}
+                className="inline-flex items-center justify-center bg-gradient-to-r from-cyan-500 to-purple-600 px-8 py-4 rounded-xl font-bold text-lg hover:shadow-lg hover:shadow-purple-500/20 transition-all cursor-pointer"
+              >
+                Comenzar ahora
+              </Link>
+            </div>
+          </motion.div>
+
         </div>
       </section>
 
@@ -479,10 +537,10 @@ function App() {
             className="text-center mb-20"
           >
             <h2 className="text-4xl md:text-6xl font-bold mb-6">
-              ¿Listo para <span className="bg-gradient-to-r from-pink-400 to-orange-400 bg-clip-text text-transparent">Empezar</span>?
+              Contanos qué necesitás <span className="bg-gradient-to-r from-pink-400 to-orange-400 bg-clip-text text-transparent">construir</span>
             </h2>
             <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-              Cuéntanos sobre tu proyecto y creemos algo extraordinario juntos
+              Te respondemos con una propuesta clara para tu web, tienda online, app o sistema a medida.
             </p>
           </motion.div>
 
@@ -526,9 +584,7 @@ function App() {
                     className="w-full bg-white/5 border border-white/20 rounded-xl px-4 py-3 focus:outline-none focus:border-cyan-500 transition-colors"
                   >
                     <option value="" className="bg-[#0A0A1E]">Selecciona un servicio</option>
-                    {services
-                      .filter((s) => s.title !== 'Marketing Digital' && s.title !== 'ConsultorÃ­a Tech')
-                      .map((s, i) => (
+                    {services.map((s, i) => (
                       <option key={i} value={s.title} className="bg-[#0A0A1E]">{s.title}</option>
                     ))}
                   </select>
@@ -614,16 +670,29 @@ function App() {
                 <h3 className="text-2xl font-bold mb-4">Síguenos</h3>
                 <div className="flex">
                   <motion.a
-                    href="https://instagram.com"
+                    href="https://www.instagram.com/erymonserviciodigital/"
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer"
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className="w-full flex items-center gap-4 bg-white/10 rounded-xl px-4 py-3 hover:bg-gradient-to-r hover:from-cyan-500/20 hover:to-purple-600/20 transition-all"
+                    className="w-full cursor-pointer flex items-center gap-4 bg-white/10 rounded-xl px-4 py-3 hover:bg-gradient-to-r hover:from-cyan-500/20 hover:to-purple-600/20 transition-all"
                     aria-label="Instagram"
                   >
-                    <span className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-2xl">
-                      📸
+                    <span className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center">
+                      <svg
+                        aria-hidden="true"
+                        viewBox="0 0 24 24"
+                        className="h-6 w-6 text-white"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.8"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <rect x="3.5" y="3.5" width="17" height="17" rx="5" />
+                        <circle cx="12" cy="12" r="4" />
+                        <circle cx="17.5" cy="6.5" r="0.75" fill="currentColor" stroke="none" />
+                      </svg>
                     </span>
                     <span className="text-left">
                       <span className="block font-semibold text-white">Instagram</span>
@@ -705,6 +774,11 @@ function Logo({ large = false, small = false }: { large?: boolean; small?: boole
 }
 
 export default App
+
+
+
+
+
 
 
 

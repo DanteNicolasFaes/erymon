@@ -355,20 +355,10 @@ function App() {
           </motion.div>
         </motion.div>
         
-        {/* Scroll Indicator */}
-        <motion.div
-          animate={{ y: [0, 10, 0] }}
-          transition={{ repeat: Infinity, duration: 2 }}
-          className="absolute bottom-10 left-1/2 -translate-x-1/2"
-        >
-          <div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center pt-2">
-            <div className="w-1 h-3 bg-cyan-400 rounded-full" />
-          </div>
-        </motion.div>
       </section>
 
       {/* Services Section */}
-      <section id="servicios" className="relative py-32 z-10">
+      <section id="servicios" className="relative pt-20 pb-32 z-10">
         <div className="max-w-7xl mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 50 }}

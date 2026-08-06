@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, type FormEvent } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { Link } from 'react-scroll'
 import LegalPages from './LegalPages'
+import { updateSeo } from './utils/seo'
 
 function App() {
   const path = window.location.pathname
@@ -18,6 +19,14 @@ function App() {
   const parallaxY = useTransform(scrollY, [0, 1000], [0, 300])
   const opacityHero = useTransform(scrollY, [0, 500], [1, 0])
   const scaleHero = useTransform(scrollY, [0, 500], [1, 0.8])
+
+  useEffect(() => {
+    updateSeo({
+      title: 'ERYMON | Desarrollo Web, E-commerce y Software a Medida en Buenos Aires',
+      description: 'Agencia digital en Buenos Aires. Desarrollamos sitios web, tiendas online y software a medida para negocios que quieren vender y crecer en internet. Pedí tu presupuesto.',
+      path: '/'
+    })
+  }, [])
 
   // 3D Particle Effect
   useEffect(() => {
@@ -199,7 +208,7 @@ function App() {
 
     try {
       console.log('Enviando a Formspark', payload)
-      const response = await fetch('https://submit-form.com/qRZlVApRu', {
+      const response = await fetch('https://submit-form.com/c8SvuS2JQ', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -266,13 +275,15 @@ function App() {
               </Link>
             ))}
           </div>
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="bg-gradient-to-r from-cyan-500 to-purple-600 px-6 py-2 rounded-lg font-semibold text-sm"
-          >
-            Empezar
-          </motion.button>
+          <Link to="contacto" smooth={true} duration={500}>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="bg-gradient-to-r from-cyan-500 to-purple-600 px-6 py-2 rounded-lg font-semibold text-sm"
+            >
+              Empezar
+            </motion.button>
+          </Link>
         </div>
       </motion.nav>
 
@@ -640,7 +651,7 @@ function App() {
                     </div>
                     <div>
                       <div className="text-gray-400 text-sm">Email</div>
-                      <div className="font-semibold">hola@erymon.com</div>
+                      <a href="mailto:hola@erymon.com" className="font-semibold hover:text-cyan-400 transition-colors">hola@erymon.com</a>
                     </div>
                   </div>
                   <div className="flex items-center gap-4">
@@ -649,7 +660,7 @@ function App() {
                     </div>
                     <div>
                       <div className="text-gray-400 text-sm">Teléfono</div>
-                      <div className="font-semibold">1155053453</div>
+                      <a href="tel:+541155053453" className="font-semibold hover:text-cyan-400 transition-colors">11 5505-3453</a>
                     </div>
                   </div>
 
@@ -712,7 +723,7 @@ function App() {
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
             <Logo small />
             <div className="text-gray-400 text-sm">
-              © 2026 ERYMON. Todos los derechos reservados.
+              © {new Date().getFullYear()} ERYMON. Todos los derechos reservados.
             </div>
             <div className="flex gap-6 text-sm">
               <a href="/privacidad" className="text-gray-400 hover:text-white transition-colors">Privacidad</a>

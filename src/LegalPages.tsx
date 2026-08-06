@@ -1,6 +1,29 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { updateSeo } from './utils/seo';
+
+const SEO_BY_PAGE: Record<string, { title: string; description: string }> = {
+  '/privacidad': {
+    title: 'Política de Privacidad | ERYMON',
+    description: 'Conocé cómo ERYMON recopila, usa y protege tus datos personales al visitar el sitio o usar nuestros servicios.'
+  },
+  '/terminos': {
+    title: 'Términos y Condiciones | ERYMON',
+    description: 'Términos y condiciones de uso de los servicios de desarrollo web, e-commerce y software a medida de ERYMON.'
+  },
+  '/cookies': {
+    title: 'Política de Cookies | ERYMON',
+    description: 'Información sobre el uso de cookies esenciales en el sitio web de ERYMON.'
+  }
+};
 
 export default function LegalPages({ page }: { page: string }) {
+  useEffect(() => {
+    const seo = SEO_BY_PAGE[page]
+    if (seo) {
+      updateSeo({ title: seo.title, description: seo.description, path: page })
+    }
+  }, [page])
+
   const content = (() => {
     switch (page) {
       case '/privacidad':
@@ -9,7 +32,7 @@ export default function LegalPages({ page }: { page: string }) {
             <h1 className="text-4xl md:text-5xl font-bold mb-8">Política de Privacidad</h1>
             <div className="space-y-6 text-gray-300">
               <p><strong>Responsable:</strong> Dante Faes (en adelante, ERYMON).</p>
-              <p><strong>Email de contacto:</strong> info@erymon.com</p>
+              <p><strong>Email de contacto:</strong> hola@erymon.com</p>
               <p><strong>Ubicación:</strong> Buenos Aires, Argentina.</p>
               <p>En ERYMON respetamos tu derecho a la privacidad. Esta política explica cómo recopilamos, usamos y protegemos tu información personal cuando visitas nuestro sitio web o usas nuestros servicios.</p>
               
@@ -17,7 +40,7 @@ export default function LegalPages({ page }: { page: string }) {
               <p>Nuestro formulario de contacto utiliza <span className="font-bold text-white">Formspark</span> para la gestión de mensajes. Al enviar un mensaje a través del formulario, los datos que nos proporciones (como tu nombre y correo electrónico) serán procesados temporalmente a través de Formspark para que nos lleguen de manera segura. No usamos estos datos para enviar spam ni los vendemos a terceros.</p>
 
               <h2 className="text-2xl font-bold text-white mt-8 mb-4">Derechos de los Usuarios</h2>
-              <p>Como usuario, tenés derecho a solicitar el acceso, rectificación o eliminación de tus datos personales poniéndote en contacto con nosotros a info@erymon.com.</p>
+              <p>Como usuario, tenés derecho a solicitar el acceso, rectificación o eliminación de tus datos personales poniéndote en contacto con nosotros a hola@erymon.com.</p>
             </div>
           </>
         );
@@ -32,7 +55,7 @@ export default function LegalPages({ page }: { page: string }) {
               <p>ERYMON, a cargo de Dante Faes, ofrece servicios de desarrollo web, e-commerce, diseño UI/UX y consultoría tech. Nos reservamos el derecho de modificar la oferta de servicios en cualquier momento.</p>
 
               <h2 className="text-2xl font-bold text-white mt-8 mb-4">Contacto Legal</h2>
-              <p>Cualquier reclamo o disputa deberá enviarse a info@erymon.com. Nuestra sede de operaciones se encuentra en Buenos Aires, Argentina y nos regimos por la legislación vigente del lugar.</p>
+              <p>Cualquier reclamo o disputa deberá enviarse a hola@erymon.com. Nuestra sede de operaciones se encuentra en Buenos Aires, Argentina y nos regimos por la legislación vigente del lugar.</p>
             </div>
           </>
         );
@@ -45,7 +68,7 @@ export default function LegalPages({ page }: { page: string }) {
               
               <h2 className="text-2xl font-bold text-white mt-8 mb-4">¿Qué son las Cookies?</h2>
               <p>Las cookies son pequeños archivos de texto que se guardan en tu dispositivo para recordar información sobre tu visita. Nuestro sitio web solo utiliza herramientas necesarias para proveer una buena experiencia funcional.</p>
-              <p>No utilizamos cookies de seguimiento de terceros sin tu consentimiento. Para cualquier consulta sobre privacidad podés contactarnos a info@erymon.com.</p>
+              <p>No utilizamos cookies de seguimiento de terceros sin tu consentimiento. Para cualquier consulta sobre privacidad podés contactarnos a hola@erymon.com.</p>
             </div>
           </>
         );
